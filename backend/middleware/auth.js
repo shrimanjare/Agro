@@ -27,9 +27,14 @@ export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ 
-        message: 'Access denied. Insufficient permissions.' 
+        message: `Access denied. Required role: ${roles.join(' or ')}. Your role: ${req.user.role}` 
       });
     }
     next();
   };
 };
+
+// Role-specific middleware
+export const requireAdmin = authorize('admin');
+export const requireStaff = authorize('admin', 'staff');
+export const requireCustomer = authorize('customer');

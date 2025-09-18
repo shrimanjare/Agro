@@ -18,7 +18,7 @@ router.post('/register', [
   body('name').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('role').optional().isIn(['admin', 'staff']).withMessage('Invalid role')
+  body('role').optional().isIn(['admin', 'staff', 'customer']).withMessage('Invalid role')
 ], async (req, res, next) => {
   try {
     const errors = validationResult(req);
@@ -42,7 +42,7 @@ router.post('/register', [
       name,
       email,
       password,
-      role: role || 'staff'
+      role: role || 'customer'
     });
 
     await user.save();
@@ -79,7 +79,7 @@ router.post('/login', [
     const { email, password } = req.body;
 
     // Find user by email
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email, isActive: true }).select('+password');
     if (!user || !user.isActive) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -97,10 +97,13 @@ router.post('/login', [
     // Generate token
     const token = generateToken(user._id);
 
+    // Remove password from user object for response
+    const userResponse = user.toObject();
+    delete userResponse.password;
     res.json({
       message: 'Login successful',
       token,
-      user
+      user: userResponse
     });
   } catch (error) {
     next(error);

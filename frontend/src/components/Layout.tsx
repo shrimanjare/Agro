@@ -24,17 +24,26 @@ const Layout: React.FC = () => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Products', href: '/products', icon: Package },
-    { name: 'Customers', href: '/customers', icon: Users },
-    { name: 'Invoices', href: '/invoices', icon: FileText },
-    { name: 'Reports', href: '/reports', icon: BarChart3 },
-    ...(user?.role === 'admin' ? [{ name: 'Users', href: '/users', icon: UserCog }] : []),
+    // Role-based navigation
+    ...(user?.role === 'admin' ? [
+      { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
+      { name: 'Products', href: '/products', icon: Package },
+      { name: 'Customers', href: '/customers', icon: Users },
+      { name: 'Invoices', href: '/invoices', icon: FileText },
+      { name: 'Reports', href: '/reports', icon: BarChart3 },
+      { name: 'Users', href: '/users', icon: UserCog }
+    ] : user?.role === 'staff' ? [
+      { name: 'Dashboard', href: '/staff/dashboard', icon: Home },
+      { name: 'Products', href: '/products', icon: Package },
+      { name: 'Customers', href: '/customers', icon: Users },
+      { name: 'Invoices', href: '/invoices', icon: FileText }
+    ] : [
+      { name: 'Dashboard', href: '/customer/dashboard', icon: Home }
+    ]),
   ];
 
   const isActive = (href: string) => {
-    return location.pathname === href || 
-           (href === '/dashboard' && location.pathname === '/');
+    return location.pathname === href;
   };
 
   return (

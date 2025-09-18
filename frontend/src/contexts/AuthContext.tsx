@@ -6,7 +6,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'admin' | 'staff';
+  role: 'admin' | 'staff' | 'customer';
   isActive: boolean;
 }
 
@@ -17,6 +17,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string, role?: string) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  redirectToDashboard: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -63,13 +64,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       toast.success('Login successful!');
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Login failed';
+      const message = error.response?.data?.message || 'Invalid email or password';
       toast.error(message);
       throw error;
     }
   };
 
-  const register = async (name: string, email: string, password: string, role: string = 'staff') => {
+  const register = async (name: string, email: string, password: string, role: string = 'customer') => {
     try {
       const response = await api.post('/auth/register', { name, email, password, role });
       const { token: newToken, user: userData } = response.data;
@@ -80,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       toast.success('Registration successful!');
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Registration failed';
+      const message = error.response?.data?.message || 'Registration failed. Email may already exist.';
       toast.error(message);
       throw error;
     }
@@ -93,13 +94,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     toast.success('Logged out successfully');
   };
 
+  const redirectToDashboard = () => {
+    if (!user) return '/login';
+    
+    switch (user.role) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'staff':
+        return '/staff/dashboard';
+      case 'customer':
+        return '/customer/dashboard';
+      default:
+        return '/';
+    }
+  };
   const value = {
     user,
     token,
     login,
     register,
     logout,
-    loading
+    loading,
+    redirectToDashboard
   };
 
   return (
