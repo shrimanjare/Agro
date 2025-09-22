@@ -1,17 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
 // Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import StaffDashboard from './pages/StaffDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
@@ -19,9 +19,12 @@ import Products from './pages/Products';
 import Customers from './pages/Customers';
 import Invoices from './pages/Invoices';
 import CreateInvoice from './pages/CreateInvoice';
+import ViewInvoice from './pages/ViewInvoice';
 import Reports from './pages/Reports';
 import Users from './pages/Users';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import QuickBilling from './pages/QuickBilling';
 
 // Role-based redirect component
 const RoleBasedRedirect: React.FC = () => {
@@ -42,6 +45,7 @@ const RoleBasedRedirect: React.FC = () => {
       return <Navigate to="/login" replace />;
   }
 };
+
 function App() {
   return (
     <ThemeProvider>
@@ -91,6 +95,16 @@ function App() {
                   <Layout><CreateInvoice /></Layout>
                 </ProtectedRoute>
               } />
+              <Route path="/invoices/:id" element={
+                <ProtectedRoute allowedRoles={['admin', 'staff']}>
+                  <Layout><ViewInvoice /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/quick-billing" element={
+                <ProtectedRoute allowedRoles={['admin', 'staff']}>
+                  <Layout><QuickBilling /></Layout>
+                </ProtectedRoute>
+              } />
               <Route path="/reports" element={
                 <ProtectedRoute allowedRoles={['admin', 'staff']}>
                   <Layout><Reports /></Layout>
@@ -104,6 +118,11 @@ function App() {
               <Route path="/profile" element={
                 <ProtectedRoute>
                   <Layout><Profile /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute requiredRole="admin">
+                  <Layout><Settings /></Layout>
                 </ProtectedRoute>
               } />
               

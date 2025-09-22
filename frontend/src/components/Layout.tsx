@@ -12,7 +12,9 @@ import {
   LogOut,
   Sun,
   Moon,
-  Bell
+  Bell,
+  Settings as SettingsIcon,
+  Zap
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -31,12 +33,14 @@ const Layout: React.FC = () => {
       { name: 'Customers', href: '/customers', icon: Users },
       { name: 'Invoices', href: '/invoices', icon: FileText },
       { name: 'Reports', href: '/reports', icon: BarChart3 },
-      { name: 'Users', href: '/users', icon: UserCog }
+      { name: 'Users', href: '/users', icon: UserCog },
+      { name: 'Settings', href: '/settings', icon: SettingsIcon }
     ] : user?.role === 'staff' ? [
       { name: 'Dashboard', href: '/staff/dashboard', icon: Home },
       { name: 'Products', href: '/products', icon: Package },
       { name: 'Customers', href: '/customers', icon: Users },
-      { name: 'Invoices', href: '/invoices', icon: FileText }
+      { name: 'Invoices', href: '/invoices', icon: FileText },
+      { name: 'Quick Billing', href: '/quick-billing', icon: Zap }
     ] : [
       { name: 'Dashboard', href: '/customer/dashboard', icon: Home }
     ]),

@@ -9,6 +9,8 @@ import Product from '../models/Product.js';
 import Customer from '../models/Customer.js';
 import { authenticate } from '../middleware/auth.js';
 import { generateInvoicePDF } from '../utils/pdfGenerator.js';
+import { sendInvoiceWhatsApp } from '../utils/whatsappService.js';
+import { sendInvoiceEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -203,6 +205,33 @@ router.post('/', authenticate, [
       .populate('customer')
       .populate('createdBy', 'name');
 
+    // Send invoice via WhatsApp and Email (async, don't wait)
+    try {
+      const pdfBuffer = await generateInvoicePDF(populatedInvoice);
+      
+      // Send WhatsApp message
+      if (populatedInvoice.customer.phone) {
+        sendInvoiceWhatsApp(
+          populatedInvoice.customer.phone,
+          populatedInvoice.invoiceNumber,
+          populatedInvoice.grandTotal,
+          null // PDF URL would go here if hosted
+        ).catch(err => console.error('WhatsApp send failed:', err));
+      }
+      
+      // Send Email
+      if (populatedInvoice.customer.email) {
+        sendInvoiceEmail(
+          populatedInvoice.customer.email,
+          populatedInvoice.customer.name,
+          populatedInvoice.invoiceNumber,
+          populatedInvoice.grandTotal,
+          pdfBuffer
+        ).catch(err => console.error('Email send failed:', err));
+      }
+    } catch (error) {
+      console.error('Failed to send invoice notifications:', error);
+    }
     res.status(201).json({
       message: 'Invoice created successfully',
       invoice: populatedInvoice
