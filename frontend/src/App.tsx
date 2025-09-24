@@ -25,6 +25,7 @@ import Users from './pages/Users';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import QuickBilling from './pages/QuickBilling';
+import Expenses from './pages/Expenses';
 
 // Role-based redirect component
 const RoleBasedRedirect: React.FC = () => {
@@ -123,6 +124,11 @@ function App() {
               <Route path="/settings" element={
                 <ProtectedRoute requiredRole="admin">
                   <Layout><Settings /></Layout>
+                </ProtectedRoute>
+              } />
+              <Route path="/expenses" element={
+                <ProtectedRoute requiredRole="admin">
+                  <Layout><Expenses /></Layout>
                 </ProtectedRoute>
               } />
               

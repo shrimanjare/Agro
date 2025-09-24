@@ -14,6 +14,8 @@ import customerRoutes from './routes/customers.js';
 import invoiceRoutes from './routes/invoices.js';
 import reportRoutes from './routes/reports.js';
 import dashboardRoutes from './routes/dashboard.js';
+import expenseRoutes from './routes/expenses.js';
+import analyticsRoutes from './routes/analytics.js';
 
 // Load environment variables
 dotenv.config();
@@ -50,6 +52,8 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
