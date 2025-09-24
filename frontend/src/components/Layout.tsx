@@ -16,6 +16,7 @@ import {
   Settings as SettingsIcon,
   Zap
 } from 'lucide-react';
+import { DollarSign } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -34,6 +35,7 @@ const Layout: React.FC = () => {
       { name: 'Invoices', href: '/invoices', icon: FileText },
       { name: 'Reports', href: '/reports', icon: BarChart3 },
       { name: 'Users', href: '/users', icon: UserCog },
+      { name: 'Expenses', href: '/expenses', icon: DollarSign },
       { name: 'Settings', href: '/settings', icon: SettingsIcon }
     ] : user?.role === 'staff' ? [
       { name: 'Dashboard', href: '/staff/dashboard', icon: Home },
